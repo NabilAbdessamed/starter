@@ -1,24 +1,30 @@
 <?php
 
-/*
-|--------------------------------------------------------------------------
-| Web Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider within a group which
-| contains the "web" middleware group. Now create something great!
-|
-*/
 
+
+
+Auth::routes(['verify'=>true]);
 Route::get('/', function () {
     return view('welcome');
 });
-
-Auth::routes(['verify'=>true]);
 
 Route::get('/home', 'HomeController@index')->name('home')->middleware('verified');
 
 Route::get('redirect/{service}','SocialiteController@redirect');
 Route::get('callback/{service}','SocialiteController@callback');
 
+
+
+Route::get('offre','CrudController@offre');
+
+
+Route::group(['prefix' => LaravelLocalization::setLocale(),'middleware' => [ 'localeSessionRedirect', 'localizationRedirect', 'localeViewPath' ]],function()
+{
+
+    Route::group(['prefix' => 'offres'],function()
+    {
+        Route::get('create','CrudController@create');
+        Route::post('store','CrudController@store');
+
+    });
+});

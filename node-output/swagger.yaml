@@ -1,0 +1,263 @@
+{
+  "swagger" : "2.0",
+  "info" : {
+    "description" : "A provider is a person who can repair some things roadside or domestic\n",
+    "version" : "1.0.0",
+    "title" : "PROVIDER CRUD"
+  },
+  "host" : "localhost",
+  "basePath" : "/localhost:3000/",
+  "schemes" : [ "https" ],
+  "consumes" : [ "application/json" ],
+  "produces" : [ "application/json" ],
+  "paths" : {
+    "/provider" : {
+      "post" : {
+        "summary" : "Add a new provider",
+        "description" : "Adding a new provider",
+        "parameters" : [ {
+          "in" : "body",
+          "name" : "body",
+          "description" : "content of provider items.",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/definitions/Provider"
+          }
+        } ],
+        "responses" : {
+          "201" : {
+            "description" : "The request has succeeded.  \n"
+          }
+        }
+      },
+      "put" : {
+        "summary" : "Update an existing provider",
+        "description" : "Updating a provider",
+        "parameters" : [ {
+          "in" : "body",
+          "name" : "body",
+          "description" : "Provider that needs to be update.",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/definitions/Provider"
+          }
+        } ],
+        "responses" : {
+          "201" : {
+            "description" : "The request has succeeded.\n"
+          },
+          "400" : {
+            "description" : "Invalid ID.\n"
+          },
+          "404" : {
+            "description" : "Provider not found\n"
+          },
+          "405" : {
+            "description" : "Validation Exception\n"
+          }
+        }
+      }
+    },
+    "/provider/{provider_id}" : {
+      "get" : {
+        "summary" : "Find a provider by ID",
+        "description" : "Return a single provider",
+        "parameters" : [ {
+          "name" : "provider_id",
+          "in" : "path",
+          "description" : "Id of a provider to return.",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "The request has succeeded.\n",
+            "schema" : {
+              "$ref" : "#/definitions/Provider"
+            }
+          },
+          "400" : {
+            "description" : "Invalid ID.\n"
+          },
+          "404" : {
+            "description" : "Provider not found\n"
+          }
+        }
+      },
+      "delete" : {
+        "summary" : "Delete an existing provider",
+        "description" : "Delete a provider",
+        "parameters" : [ {
+          "name" : "provider_id",
+          "in" : "path",
+          "description" : "Provider Id to delete.",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "201" : {
+            "description" : "The request has succeeded.\n"
+          },
+          "400" : {
+            "description" : "Invalid ID.\n"
+          },
+          "404" : {
+            "description" : "Provider not found\n"
+          },
+          "405" : {
+            "description" : "Validation Exception\n"
+          }
+        }
+      }
+    }
+  },
+  "definitions" : {
+    "Contact" : {
+      "type" : "object",
+      "required" : [ "address", "email", "mobile_phone_number", "type" ],
+      "properties" : {
+        "type" : {
+          "type" : "string",
+          "example" : "Assistance",
+          "description" : "The type of contact (eg. Assistance, Office).",
+          "maxLength" : 100
+        },
+        "address" : {
+          "type" : "object",
+          "description" : "The address of the contact.",
+          "allOf" : [ {
+            "$ref" : "#/definitions/Address"
+          } ]
+        },
+        "email" : {
+          "type" : "string",
+          "format" : "email"
+        },
+        "mobile_phone_number" : {
+          "type" : "string",
+          "example" : "3307956878",
+          "description" : "The mobile phone number of the contact (prefix included)",
+          "maxLength" : 20
+        }
+      }
+    },
+    "Address" : {
+      "type" : "object",
+      "required" : [ "country", "locality", "postal_code", "street_address" ],
+      "properties" : {
+        "street_address" : {
+          "type" : "string",
+          "example" : "7 rue de chalon, Batiment",
+          "description" : "The address lines.",
+          "maxLength" : 1024
+        },
+        "subdivision" : {
+          "type" : "string",
+          "example" : "HAUTS-DE-SEINE",
+          "description" : "Area of the city, or department name.",
+          "maxLength" : 50
+        },
+        "postal_code" : {
+          "type" : "string",
+          "example" : "92400",
+          "description" : "The zip code.",
+          "maxLength" : 20
+        },
+        "locality" : {
+          "type" : "string",
+          "example" : "Courbevoie",
+          "description" : "The city.",
+          "maxLength" : 50
+        },
+        "country" : {
+          "type" : "string",
+          "example" : "FR",
+          "description" : "Country ISO-3166-1 alpha-2 format (2 letter codes).",
+          "minLength" : 2,
+          "maxLength" : 2
+        }
+      }
+    },
+    "Provider" : {
+      "type" : "object",
+      "required" : [ "contacts", "is_auto_assignable", "opening_days_hours", "provider_id", "rating" ],
+      "properties" : {
+        "provider_id" : {
+          "type" : "string",
+          "example" : "012684khkjgugb-515",
+          "description" : "Identifier of the provider",
+          "maxLength" : 50
+        },
+        "contacts" : {
+          "type" : "array",
+          "description" : "Information of the different types of contact of the provider.",
+          "items" : {
+            "$ref" : "#/definitions/Contact"
+          }
+        },
+        "opening_days_hours" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/DaysHours"
+          }
+        },
+        "services" : {
+          "type" : "string",
+          "description" : "List of services the provider can made."
+        },
+        "is_auto_assignable" : {
+          "type" : "boolean",
+          "example" : true,
+          "description" : "Indicates if the provider is eligible to automatic assignment."
+        },
+        "rating" : {
+          "type" : "object",
+          "description" : "The rating information of the provider.",
+          "allOf" : [ {
+            "$ref" : "#/definitions/Rating"
+          } ]
+        }
+      },
+      "description" : "informations related to a provider;"
+    },
+    "Rating" : {
+      "type" : "object",
+      "required" : [ "ranking" ],
+      "properties" : {
+        "ranking" : {
+          "type" : "integer",
+          "example" : 4,
+          "description" : "Ranking of a provider"
+        }
+      }
+    },
+    "DayOfTheWeek" : {
+      "type" : "string",
+      "description" : "The day of the week.",
+      "enum" : [ "MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY", "SATURDAY", "SUNDAY" ]
+    },
+    "DaysHours" : {
+      "type" : "object",
+      "required" : [ "day_of_week", "hour_periods" ],
+      "properties" : {
+        "day_of_week" : {
+          "type" : "object",
+          "description" : "The day of the week",
+          "allOf" : [ {
+            "$ref" : "#/definitions/DayOfTheWeek"
+          } ]
+        },
+        "hour_periods" : {
+          "type" : "array",
+          "items" : {
+            "type" : "string",
+            "example" : "T22:00/T22:15",
+            "maxLength" : 13
+          },
+          "minItems" : 1
+        }
+      }
+    }
+  },
+  "x-format-version" : 1.0
+}
